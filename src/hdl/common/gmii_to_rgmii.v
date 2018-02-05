@@ -6,11 +6,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 module gmii_to_rgmii(
-	//Clocks
+	// Clocks
 	input tx_clk,
 	input rx_clk,
 
-	//GMII
+	// GMII
 	input gmii_tx_en,
 	input gmii_tx_er,
 	input [7:0] gmii_tx_data,
@@ -19,14 +19,17 @@ module gmii_to_rgmii(
 	output gmii_rx_er,
 	output [7:0] gmii_rx_data,
 
-	//RGMII
+	// RGMII
 	output rgmii_tx_ctl,
 	output [3:0] rgmii_tx_data,
 
 	input rgmii_rx_ctl,
 	input [3:0] rgmii_rx_data,
 
-	//Status
+	// In-band Status
+	// Bit [0]   Link status:   1 up, 0 down
+	// Bit [2:1] Link speed:    00 10Mbps, 01 100Mbps, 10 1000Mbps
+	// Bit [3]   Duplex status: 0 half-duplex, 1 full-duplex
 	output reg [3:0] status
 	);
 	
@@ -169,7 +172,8 @@ module gmii_to_rgmii(
 		.S(0)
 	);
 
-	//Obtener estado del enlace
+	// Obtener estado del enlace
+	// RGMII reporta el estado del enlace mientras no se reciben datos
 
 	always @(posedge rx_clk) begin
 		if (!gmii_rx_dv && !gmii_rx_er) begin
